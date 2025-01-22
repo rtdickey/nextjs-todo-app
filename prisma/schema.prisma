@@ -17,4 +17,5 @@ model Todo {
   id        String  @id @default(uuid())
   task      String
   completed Boolean
+  date_completed DateTime?
 }

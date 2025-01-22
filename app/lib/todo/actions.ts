@@ -1,6 +1,5 @@
 "use server";
 
-import { Todo } from "@/app/lib/models/todo";
 import { revalidatePath } from "next/cache";
 import { PrismaClient } from "@prisma/client";
 
@@ -8,13 +7,33 @@ export const getTodos = async () => {
   const prisma = new PrismaClient();
   try {
     const todos = await prisma.todo.findMany({
-      orderBy: { completed: "asc" },
+      orderBy: { date_completed: "desc" },
     });
     return todos;
   } catch (error) {
     throw error;
   } finally {
     prisma.$disconnect();
+  }
+};
+
+export const addTodo = async (formData: FormData) => {
+  const task = formData.get("task") as string;
+  console.log("i know you should be server...");
+  const prisma = new PrismaClient();
+  try {
+    await prisma.todo.create({
+      data: {
+        task: task,
+        completed: false,
+      },
+    });
+    revalidatePath("/");
+  } catch (error) {
+    console.log(error);
+    throw error;
+  } finally {
+    prisma.$disconnect;
   }
 };
 
@@ -31,7 +50,10 @@ export const updateTodo = async (todoId: string) => {
 
     await prisma.todo.update({
       where: { id: todoId },
-      data: { completed: !todo.completed },
+      data: {
+        completed: !todo.completed,
+        date_completed: !todo.completed ? new Date() : null,
+      },
     });
 
     revalidatePath("/");
@@ -39,5 +61,22 @@ export const updateTodo = async (todoId: string) => {
     throw error;
   } finally {
     prisma.$disconnect();
+  }
+};
+
+export const deleteTodo = async (todoId: string) => {
+  const prisma = new PrismaClient();
+  try {
+    await prisma.todo.delete({
+      where: {
+        id: todoId,
+      },
+    });
+    revalidatePath("/");
+  } catch (error) {
+    console.log(error);
+    throw error;
+  } finally {
+    prisma.$disconnect;
   }
 };

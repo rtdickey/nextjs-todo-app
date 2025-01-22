@@ -1,5 +1,5 @@
-import { type Todo } from "@/app/lib/models/todo";
-import { updateTodo } from "@/app/lib/todo/actions";
+import { Todo } from "@prisma/client";
+import { deleteTodo, updateTodo } from "@/app/lib/todo/actions";
 
 interface TodoRowProp {
   todo: Todo;
@@ -19,6 +19,17 @@ const TodoRow = ({ todo }: TodoRowProp) => {
         />
       </td>
       <td>{todo.task}</td>
+      <td>
+        <button
+          className=""
+          onClick={async () => {
+            "use server";
+            await deleteTodo(todo.id);
+          }}
+        >
+          delete
+        </button>
+      </td>
     </tr>
   );
 };
