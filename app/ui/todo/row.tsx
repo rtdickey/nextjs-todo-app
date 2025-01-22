@@ -14,7 +14,7 @@ const TodoRow = ({ todo }: TodoRowProp) => {
           checked={todo.completed}
           onChange={async () => {
             "use server";
-            await updateTodo(todo);
+            await updateTodo(todo.id);
           }}
         />
       </td>

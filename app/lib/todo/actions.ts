@@ -2,20 +2,42 @@
 
 import { Todo } from "@/app/lib/models/todo";
 import { revalidatePath } from "next/cache";
-
-const todos: Todo[] = [
-  { id: "1", task: "Buy milk", completed: false },
-  { id: "2", task: "Buy eggs", completed: true },
-];
+import { PrismaClient } from "@prisma/client";
 
 export const getTodos = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return todos;
+  const prisma = new PrismaClient();
+  try {
+    const todos = await prisma.todo.findMany({
+      orderBy: { completed: "asc" },
+    });
+    return todos;
+  } catch (error) {
+    throw error;
+  } finally {
+    prisma.$disconnect();
+  }
 };
 
-export const updateTodo = async (todo: Todo) => {
-  todo.completed = !todo.completed;
-  console.log(`Updated todo: ${JSON.stringify(todo)}`);
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  revalidatePath("/");
+export const updateTodo = async (todoId: string) => {
+  const prisma = new PrismaClient();
+  try {
+    const todo = await prisma.todo.findUnique({
+      where: { id: todoId },
+    });
+
+    if (!todo) {
+      throw new Error("Todo not found");
+    }
+
+    await prisma.todo.update({
+      where: { id: todoId },
+      data: { completed: !todo.completed },
+    });
+
+    revalidatePath("/");
+  } catch (error) {
+    throw error;
+  } finally {
+    prisma.$disconnect();
+  }
 };
