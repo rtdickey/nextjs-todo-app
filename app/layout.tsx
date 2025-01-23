@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,7 +28,69 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="drawer">
+          <input id="my-drawer-3" type="checkbox" className="drawer-toggle" />
+          <div className="drawer-content flex flex-col">
+            <div className="navbar bg-base-300 w-full">
+              <div className="flex-none lg:hidden">
+                <label
+                  htmlFor="my-drawer-3"
+                  aria-label="open sidebar"
+                  className="btn btn-square btn-ghost"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    className="inline-block h-6 w-6 stroke-current"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M4 6h16M4 12h16M4 18h16"
+                    ></path>
+                  </svg>
+                </label>
+              </div>
+              <div className="mx-2 flex-1 px-2">Ryan's Test Project</div>
+              <div className="hidden flex-none lg:block">
+                <ul className="menu menu-horizontal">
+                  <li>
+                    <Link href="/dashboard">Honey-Do List</Link>
+                  </li>
+                  <li>
+                    <Link href="/dashboard/about">About</Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            {children}
+            <footer className="footer footer-center bg-base-300 text-base-content p-4">
+              <aside>
+                <p>
+                  Copyright © {new Date().getFullYear()} - All right reserved by
+                  ACME Industries Ltd
+                </p>
+              </aside>
+            </footer>
+          </div>
+          <div className="drawer-side">
+            <label
+              htmlFor="my-drawer-3"
+              aria-label="close sidebar"
+              className="drawer-overlay"
+            ></label>
+            <ul className="menu bg-base-200 min-h-full w-80 p-4">
+              <li>
+                <Link href="/dashboard">Honey-Do List</Link>
+              </li>
+              <li>
+                <Link href="/dashboard/about">About</Link>
+              </li>
+            </ul>
+          </div>
+        </div>
       </body>
     </html>
   );
