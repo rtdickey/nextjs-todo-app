@@ -80,3 +80,16 @@ export const deleteTodo = async (todoId: string) => {
     prisma.$disconnect;
   }
 };
+
+export const deleteAllTodos = async () => {
+  const prisma = new PrismaClient();
+  try {
+    await prisma.todo.deleteMany();
+    revalidatePath("/");
+  } catch (error) {
+    console.log(error);
+    throw error;
+  } finally {
+    prisma.$disconnect();
+  }
+};

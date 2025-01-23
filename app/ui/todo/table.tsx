@@ -1,6 +1,7 @@
 import { getTodos } from "@/app/lib/todo/actions";
 import TodoRow from "./row";
 import AddTodo from "./add";
+import ClearTodos from "./clear-todos";
 
 const TodoTable = async () => {
   const todos = await getTodos();
@@ -12,7 +13,10 @@ const TodoTable = async () => {
       <table className="table-auto">
         <thead>
           <tr>
-            <th colSpan={3}>Honey-Do List</th>
+            <th colSpan={2}>Honey-Do List</th>
+            <th>
+              <ClearTodos show={todos.length > 0} />
+            </th>
           </tr>
         </thead>
         <tbody>
